@@ -1,13 +1,12 @@
 import { auth } from "@clerk/nextjs";
 import { NextResponse } from "next/server";
-import Configuration from "openai";
-import OpenAIApi from "openai";
+import OpenAI from "openai";
 
-const configuration = new Configuration({
+import { increaseApiLimit, checkApiLimit } from "@/lib/api-limit";
+
+const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
 });
-
-const openai = new OpenAIApi(configuration);
 
 export async function POST(
     req: Request
@@ -21,7 +20,7 @@ export async function POST(
             return new NextResponse("Unauthorized", { status: 401 });
         }
 
-        if (!configuration.apiKey) {
+        if (!openai.apiKey) {
             return new NextResponse("Open AI API Key not configured", { status: 500 });
         }
 
@@ -36,6 +35,14 @@ export async function POST(
         if (!resolution) {
             return new NextResponse("Resolution is required", { status: 400 });
         }
+
+        const freeTrial = await checkApiLimit();
+
+        if (!freeTrial) {
+            return new NextResponse("Free trial has expired.", { status: 403 });
+        }
+
+        await increaseApiLimit();
 
         const response = await openai.images.generate({
             prompt,

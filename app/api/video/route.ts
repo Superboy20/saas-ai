@@ -31,10 +31,10 @@ export async function POST(
         }
 
         const response = await replicate.run(
-            "riffusion/riffusion:8cf61ea6c56afd61d8f5b9ffd14d7c216c0a93844ce2d82ac1c9ecc9c7f24e05",
+            "arielreplicate/stable_diffusion_infinite_zoom:a2527c5074fc0cf9fa6015a40d75d080d1ddf7082fabe142f1ccd882c18fce61",
             {
                 input: {
-                    prompt_a: prompt
+                    prompt
                 }
             }
         );
@@ -44,7 +44,7 @@ export async function POST(
         return NextResponse.json(response)
 
     } catch (error) {
-        console.log("[MUSIC_ERROR]", error);
+        console.log("[VIDEO_ERROR]", error);
         return new NextResponse("Internal error", { status: 500 });
     }
 }
