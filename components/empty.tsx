@@ -1,11 +1,5 @@
-import Image from "next/image"
-
-// interface EmptyProps {
-//     label: string;
-// }
-
 export const Empty = ({
-    // label
+
 }) => {
     return (
         <div className="h-full p-10 flex flex-col items-center justify-center">
